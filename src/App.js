@@ -1,21 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useDebounce } from 'use-debounce';
 import './App.css';
 import image from './images/naruto.png';
 
 const baseUrl = 'https://api.jikan.moe/v3/search/anime'
 
 function App() {
-  const [query, setQuery] = useState('');
+  const [text, setText] = useState('');
+  const [query] = useDebounce(text, 1000)
   const [animes, setAnimes] = useState([]);
   const [loading, setLoading] = useState(false);
-  async function searchAnime(e){
-    e.preventDefault()
+  async function searchAnime(){
+    console.log('jalan')
     if(!query) return;
     try{
       setLoading(true);
       const response = await window.fetch(`${baseUrl}?q=${query}`);
       const data = await response.json();
-      console.log('data', data)
       setAnimes(data.results)
       setLoading(false);
     }catch(e){
@@ -23,25 +24,34 @@ function App() {
       console.error(e)
     }
   }
+
+  useEffect(() => {
+    searchAnime(query)
+  }, [query])
+
   return (
     <div className="App">
       <div>
         <img src={image} alt="naruto" className="logo" />
       </div>
-      <form className="form-wrapper" onSubmit={searchAnime}>
+      <div className="form-wrapper">
         <input 
           type="text" 
           placeholder="Search here..." 
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
         />
         <button type="submit">Search</button>
-      </form>
+      </div>
       {loading && <div style={{ marginTop: '30px' }}>loading...</div>}
       <div className="container-anime">
         {!loading && animes && animes.map(anime => (
           <div className="anime-card" key={anime.mal_id}>
-            <img src={anime.image_url} alt={anime.title} className="image"/>
+            <img 
+              src={anime.image_url} 
+              alt={anime.title} 
+              className="image"
+            />
             <div className="anime-detail">
               <h3>{anime.title}</h3>
               <p>{anime.synopsis}</p>
