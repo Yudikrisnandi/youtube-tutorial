@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useDebounce } from 'use-debounce';
 import './App.css';
 import image from './images/naruto.png';
@@ -10,8 +10,7 @@ function App() {
   const [query] = useDebounce(text, 1000)
   const [animes, setAnimes] = useState([]);
   const [loading, setLoading] = useState(false);
-  async function searchAnime(){
-    console.log('jalan')
+  /*async function searchAnime(){
     if(!query) return;
     try{
       setLoading(true);
@@ -23,11 +22,25 @@ function App() {
       setLoading(false);
       console.error(e)
     }
-  }
+  }*/
+
+  const searchAnime = useCallback(async() => {
+    if(!query) return;
+    try{
+      setLoading(true);
+      const response = await window.fetch(`${baseUrl}?q=${query}`);
+      const data = await response.json();
+      setAnimes(data.results)
+      setLoading(false);
+    }catch(e){
+      setLoading(false);
+      console.error(e)
+    }
+  }, [query])
 
   useEffect(() => {
     searchAnime(query)
-  }, [query])
+  }, [query, searchAnime])
 
   return (
     <div className="App">
