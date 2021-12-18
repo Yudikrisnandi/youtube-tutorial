@@ -1,76 +1,56 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
 import './App.css';
-import image from './images/naruto.png';
+import logo from './images/naruto.png';
 
-const baseUrl = 'https://api.jikan.moe/v3/search/anime'
+const baseUrl = 'https://api.jikan.moe/v3/search/anime';
 
 function App() {
   const [text, setText] = useState('');
-  const [query] = useDebounce(text, 1000)
-  const [animes, setAnimes] = useState([]);
   const [loading, setLoading] = useState(false);
-  /*async function searchAnime(){
-    if(!query) return;
-    try{
-      setLoading(true);
-      const response = await window.fetch(`${baseUrl}?q=${query}`);
-      const data = await response.json();
-      setAnimes(data.results)
-      setLoading(false);
-    }catch(e){
-      setLoading(false);
-      console.error(e)
+  const [query] = useDebounce(text, 1000);
+  const [animes, setAnimes] = useState([]);
+  
+  useEffect(() =>{
+    async function searchAnime(){
+      try{
+        setLoading(true);
+        const response = await window.fetch(`${baseUrl}?q=${query}`);
+        const data = await response.json();
+        setAnimes(data.results)
+        setLoading(false);
+      }catch(e){
+        setLoading(false);
+        console.log(e)
+      }
     }
-  }*/
-
-  const searchAnime = useCallback(async() => {
-    if(!query) return;
-    try{
-      setLoading(true);
-      const response = await window.fetch(`${baseUrl}?q=${query}`);
-      const data = await response.json();
-      setAnimes(data.results)
-      setLoading(false);
-    }catch(e){
-      setLoading(false);
-      console.error(e)
-    }
+    searchAnime()
   }, [query])
-
-  useEffect(() => {
-    searchAnime(query)
-  }, [query, searchAnime])
-
   return (
     <div className="App">
       <div>
-        <img src={image} alt="naruto" className="logo" />
+        <img src={logo} alt="anime-search-logo" className="logo"/>
       </div>
       <div className="form-wrapper">
         <input 
-          type="text" 
-          placeholder="Search here..." 
+          type="text"
+          placeholder="search here..."
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
-        <button type="submit">Search</button>
+        <button>submit</button>
       </div>
-      {loading && <div style={{ marginTop: '30px' }}>loading...</div>}
       <div className="container-anime">
-        {!loading && animes && animes.map(anime => (
-          <div className="anime-card" key={anime.mal_id}>
-            <img 
-              src={anime.image_url} 
-              alt={anime.title} 
-              className="image"
-            />
-            <div className="anime-detail">
-              <h3>{anime.title}</h3>
-              <p>{anime.synopsis}</p>
-            </div>
+      {loading && <div>loading...</div>}
+      {!loading && animes && animes.map(anime => (
+        <div className="anime-card" key={anime.mai_id}>
+          <img src={anime.image_url} alt={anime.title} className="image"/>
+          <div className="anime-detail">
+            <h3>{anime.title}</h3>
+            <p>{anime.synopsis}</p>
           </div>
-        ))}
+        </div>
+      ))}
       </div>
     </div>
   );
