@@ -12,7 +12,7 @@
 [<img align="left" alt="kodeakademia | Instagram" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/instagram.svg" />][instagram]
 
 
-[website]: https://kodeakademia.netlify.app/
+[website]: https://www.kodeakademia.com/
 [youtube]: https://www.youtube.com/channel/UCFrn9K9POdgVCutBs0hkqMQ
 [instagram]: https://www.instagram.com/yudi_kaka/
 [linkedin]: https://www.linkedin.com/in/yudikrisnandi22/
